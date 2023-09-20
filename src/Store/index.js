@@ -1,10 +1,10 @@
 import { combineReducers, createStore } from "redux";
 import product from "./productReducer";
-
-const reducers = combineReducers({ product })
+import cart from "./cartReducer";
+const reducers = combineReducers({ product, cart })
 
 const store = () => {
-  return createStore(reducers)
+	return createStore(reducers)
 }
 
 export default store();
