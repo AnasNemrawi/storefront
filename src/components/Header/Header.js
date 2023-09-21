@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
-import StoreIcon from "@mui/icons-material/Store";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { connect } from "react-redux";
+import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
+import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -16,11 +17,14 @@ import ListItemText from "@mui/material/ListItemText";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import Button from "@mui/material/Button";
 import { CART_REMOVE } from "../../Store/Actions";
+import StoreIcon from "@mui/icons-material/Store";
 
-const Header = (props) => {
+function Header(props) {
 	const [state, setState] = useState({
+		top: false,
+		left: false,
+		bottom: false,
 		right: false,
 	});
 
@@ -34,7 +38,7 @@ const Header = (props) => {
 			return;
 		}
 
-		setState({ [anchor]: open });
+		setState({ ...state, [anchor]: open });
 	};
 
 	const handleQuantityChange = (itemId, change) => {
@@ -50,20 +54,21 @@ const Header = (props) => {
 				width: anchor === "top" || anchor === "bottom" ? "auto" : 350, // Adjust the width here
 			}}
 			role="presentation"
+			onKeyDown={toggleDrawer(anchor, false)}
 		>
 			<List>
 				{props.Cart.map((item) => (
 					<ListItem key={item.id} disablePadding>
 						<ListItemButton>
-							<ListItemIcon>
+							<ListItemIcon >
 								<DeleteIcon
 									onClick={() => {
-										props.CART_REMOVE(item.name);
+										props.CART_REMOVE(item);
 									}}
 									style={{ cursor: "pointer", color: "tomato" }}
 								/>
 							</ListItemIcon>
-							<ListItemText primary={item.name} />
+							<ListItemText sx={{ width: "101px" }} primary={item.name} />
 							<ListItemIcon>
 								<Button
 									onClick={() => handleQuantityChange(item._id, -1)}
