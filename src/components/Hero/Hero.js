@@ -1,11 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Button from '@mui/material/Button';
-import { office } from '../../Store/productReducer'; // Import the action creator
+import { useDispatch, useSelector } from 'react-redux'
+import { office } from '../../Store/productReducer';
+function Hero() {
+	const dispatch = useDispatch();
 
-function Hero(props) {
 	const handleButtonClick = (name) => {
-		props.office(name);
+		dispatch(office(name));
 	};
 
 	return (
@@ -14,10 +15,8 @@ function Hero(props) {
 			<Button style={{ backgroundColor: '#28a745', color: '#fff', border: 'none', padding: '10px 20px', cursor: 'pointer' }} onClick={() => handleButtonClick('food')}>Food</Button>
 			<Button style={{ backgroundColor: '#ffc107', color: '#000', border: 'none', padding: '10px 20px', cursor: 'pointer' }} onClick={() => handleButtonClick('electronics')}>Electronics</Button>
 		</div>
-
 	);
 }
 
-const mapDispatchToProps = { office };
 
-export default connect(null, mapDispatchToProps)(Hero);
+export default Hero;

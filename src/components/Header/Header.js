@@ -10,6 +10,7 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -17,10 +18,15 @@ import ListItemText from "@mui/material/ListItemText";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { CART_REMOVE } from "../../Store/Actions";
+import { CART_REMOVE } from "../../Store/cartReducer";
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import StoreIcon from "@mui/icons-material/Store";
 
 function Header(props) {
+	const product = useSelector((state) => state);
+	const dispatch = useDispatch();
+
 	const [state, setState] = useState({
 		top: false,
 		left: false,
@@ -28,6 +34,7 @@ function Header(props) {
 		right: false,
 	});
 
+	// Maintain a separate state for item quantities
 	const [itemQuantities, setItemQuantities] = useState({});
 
 	const toggleDrawer = (anchor, open) => (event) => {
@@ -51,19 +58,20 @@ function Header(props) {
 	const list = (anchor) => (
 		<Box
 			sx={{
-				width: anchor === "top" || anchor === "bottom" ? "auto" : 350, // Adjust the width here
+				width: anchor === "top" || anchor === "bottom" ? "auto" : 250,
 			}}
 			role="presentation"
+			// onClick={toggleDrawer(anchor, false)} Remove this line to prevent closing on click
 			onKeyDown={toggleDrawer(anchor, false)}
 		>
 			<List>
-				{props.Cart.map((item) => (
+				{product.cart.cart.map((item) => (
 					<ListItem key={item.id} disablePadding>
 						<ListItemButton>
-							<ListItemIcon >
+							<ListItemIcon>
 								<DeleteIcon
 									onClick={() => {
-										props.CART_REMOVE(item);
+										dispatch(CART_REMOVE(item));
 									}}
 									style={{ cursor: "pointer", color: "tomato" }}
 								/>
@@ -73,19 +81,22 @@ function Header(props) {
 								<Button
 									onClick={() => handleQuantityChange(item._id, -1)}
 									startIcon={<RemoveIcon />}
-									size="medium"
+									size="small"
 									disabled={(itemQuantities[item._id] || 0) === 0}
 								/>
 								{itemQuantities[item._id] || 0}
 								<Button
 									onClick={() => handleQuantityChange(item._id, 1)}
 									startIcon={<AddIcon />}
-									size="medium"
+									size="small"
 								/>
 							</ListItemIcon>
 						</ListItemButton>
 					</ListItem>
 				))}
+				<Link to={"/checkout"} >
+					<Button onClick={() => { }}>CheckOut</Button>
+				</Link>
 			</List>
 		</Box>
 	);
@@ -107,7 +118,7 @@ function Header(props) {
 							onClick={toggleDrawer("right", true)}
 						/>
 						<Typography variant="h6" color="inherit" noWrap>
-							{props.Cart.length}
+							{product.cart.cart.length}
 						</Typography>
 					</div>
 				</Toolbar>
@@ -121,12 +132,6 @@ function Header(props) {
 			</Drawer>
 		</div>
 	);
-};
+}
 
-const mapStateToProps = (state) => ({
-	Cart: state.cart.cart,
-});
-
-const mapDispatchToProps = { CART_REMOVE };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;
